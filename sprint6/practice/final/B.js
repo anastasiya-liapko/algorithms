@@ -67,7 +67,7 @@ function createAdjacentsLists(matrix) {
 function mainDFS(vertexCount, edgesList) {
   const graph = createAdjacentsLists(edgesList);
 
-  const color = new Array(vertexCount + 1).fill("w");
+  const color = new Array(vertexCount + 1).fill("white");
 
   function DFS(vertexStart) {
     const stack = [];
@@ -76,25 +76,23 @@ function mainDFS(vertexCount, edgesList) {
     while (stack.length) {
       const v = stack.pop();
         
-      if (color[v] === "w") {
-        color[v] = "g";
+      if (color[v] === "white") {
+        color[v] = "gray";
         stack.push(v);
 
         let ws = graph.get(v);
     
         if (ws) {
           for (let i = 0; i < ws.length; i++) {
-            const w = ws[i];
-
-            if (color[w] === "w") {
-              stack.push(w);
-            } else if (color[w] === "g") {
+            if (color[ws[i]] === "white") {
+              stack.push(ws[i]);
+            } else if (color[ws[i]] === "gray") {
               return false;
             }
           }
         } 
-      } else if (color[v] === "g") {
-        color[v] = "b";
+      } else if (color[v] === "gray") {
+        color[v] = "black";
       }
     }
 
@@ -102,7 +100,7 @@ function mainDFS(vertexCount, edgesList) {
   }
 
   for (let i = 1; i <= color.length; i++) {
-    if (color[i] === 'w') {
+    if (color[i] === "white") {
       const res = DFS(i);
       if (res === false) {
         return 'NO';
@@ -112,6 +110,7 @@ function mainDFS(vertexCount, edgesList) {
 
   return 'YES';
 }
+
 function solve() {
   const vertexCount = readInt();
   const matrix = readMatrix(vertexCount - 1);
