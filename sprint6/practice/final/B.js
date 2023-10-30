@@ -44,7 +44,7 @@ _reader.on('line', line => {
 process.stdin.on('end', solve);
 
 function createAdjacentsLists(matrix) {
-	const map = new Map();
+	const graph = [];
 
   for (let i = 0; i < matrix.length; i++) {
     const from = i + 1;
@@ -54,14 +54,14 @@ function createAdjacentsLists(matrix) {
       const direction = matrix[i][j];
 
       if (direction === 'R') {
-        map.has(from) ? map.get(from).push(to) : map.set(from, [to]);
+        graph[from] ? graph[from].push(to) : graph[from] = [to]
       } else if (direction === 'B') {
-        map.has(to) ? map.get(to).push(from) : map.set(to, [from]);
+        graph[to] ? graph[to].push(from) : graph[to] = [from]
       }
     }
   }
 
-  return map;
+  return graph;
 }
 
 function mainDFS(vertexCount, edgesList) {
@@ -80,17 +80,13 @@ function mainDFS(vertexCount, edgesList) {
         color[v] = "gray";
         stack.push(v);
 
-        let ws = graph.get(v);
-    
-        if (ws) {
-          for (let i = 0; i < ws.length; i++) {
-            if (color[ws[i]] === "white") {
-              stack.push(ws[i]);
-            } else if (color[ws[i]] === "gray") {
-              return false;
-            }
+        for (let i = 0; i < graph[v]?.length; i++) {
+          if (color[graph[v][i]] === "white") {
+            stack.push(graph[v][i]);
+          } else if (color[graph[v][i]] === "gray") {
+            return false;
           }
-        } 
+        }
       } else if (color[v] === "gray") {
         color[v] = "black";
       }
