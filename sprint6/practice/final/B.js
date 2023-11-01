@@ -43,30 +43,7 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-function createAdjacentsLists(matrix) {
-	const graph = [];
-
-  for (let i = 0; i < matrix.length; i++) {
-    const from = i + 1;
-
-    for (let j = 0; j < matrix[i].length; j++) {
-      const to = from + j + 1;
-      const direction = matrix[i][j];
-
-      if (direction === 'R') {
-        graph[from] ? graph[from].push(to) : graph[from] = [to]
-      } else if (direction === 'B') {
-        graph[to] ? graph[to].push(from) : graph[to] = [from]
-      }
-    }
-  }
-
-  return graph;
-}
-
-function mainDFS(vertexCount, edgesList) {
-  const graph = createAdjacentsLists(edgesList);
-
+function mainDFS(vertexCount, graph) {
   const color = new Array(vertexCount + 1).fill("white");
 
   function DFS(vertexStart) {
@@ -109,9 +86,9 @@ function mainDFS(vertexCount, edgesList) {
 
 function solve() {
   const vertexCount = readInt();
-  const matrix = readMatrix(vertexCount - 1);
+  const graph = createAdjacentsLists(vertexCount - 1);
   
-  process.stdout.write(`${mainDFS(vertexCount, matrix)}`);
+  process.stdout.write(`${mainDFS(vertexCount, graph)}`);
 }
 
 function readInt() {
@@ -121,15 +98,29 @@ function readInt() {
 }
 
 function readArray() {
-  var arr = _inputLines[_curLine].trim().split("");
+  const arr = _inputLines[_curLine].trim().split("");
   _curLine++;
   return arr;
 }
 
-function readMatrix(rowsCount) {
-  var arr = [];
-  for (let i = 0; i !== rowsCount; i++) {
-      arr.push(readArray())
+function createAdjacentsLists(rowsCount) {
+  const graph = [];
+
+  for (let i = 0; i < rowsCount; i++) {
+    const from = i + 1;
+    const directions = readArray();
+
+    for (let j = 0; j < directions.length; j++) {
+      const to = from + j + 1;
+      const direction = directions[j];
+
+      if (direction === 'R') {
+        graph[from] ? graph[from].push(to) : graph[from] = [to]
+      } else if (direction === 'B') {
+        graph[to] ? graph[to].push(from) : graph[to] = [from]
+      }
+    }
   }
-  return arr;
+
+  return graph;
 }
