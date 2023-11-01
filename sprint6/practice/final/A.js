@@ -1,5 +1,5 @@
 /*
-  ОТЧЕТ https://contest.yandex.ru/contest/25070/run-report/95563837/
+  ОТЧЕТ https://contest.yandex.ru/contest/25070/run-report/95565614/
   
    Пусть V - количество вершин,
          E - количество ребер.
