@@ -1,5 +1,5 @@
 /*
-  ОТЧЕТ https://contest.yandex.ru/contest/25597/run-report/97326628/
+  ОТЧЕТ https://contest.yandex.ru/contest/25597/run-report/97345637/
   
    Пусть s - первая строка,
          t - вторая строка,
