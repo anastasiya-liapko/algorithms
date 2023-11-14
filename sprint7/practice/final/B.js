@@ -1,3 +1,25 @@
+/*
+  ОТЧЕТ https://contest.yandex.ru/contest/25597/run-report/97326628/
+  
+   Пусть n - длина входного массива с количеством выигранных партий.
+
+  -- ПРИНЦИП РАБОТЫ --
+  1. Проверяю, если сумма всех очков делится нацело на 2. Если нет, завершаю алгоритм и возвращаю 'False';
+  2. Делю сумму всех очков на 2. Полученное число - сумма каждой из двух искомых частей массива.
+  3. 
+
+  -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+  Сложность = O(tn * sn) + O(sn) + O(tn) + O(tn * sn) = O(sn) + O(tn) + O(tn * sn).
+  1. Для создания матрицы dp понадобится цикл длиной tn и вложенный цикл длиной sn: tn * sn;
+  2. Для заполнения первой строки матрицы понадобится цикл длиной sn;
+  3. Для заполнения первого столбца матрицы понадобится цикл длиной tn;
+  4. Для заполнения матрицы понадобится цикл длиной tn и вложенный цикл длиной sn: tn * sn.
+
+  -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+  Сложность = O(tn * sn).
+  1. Понадобится доп. память для хранения матрицы dp: tn * sn.
+*/
+
 const _readline = require('readline');
 
 const _reader = _readline.createInterface({
@@ -13,88 +35,52 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-function isSplitPossible(arr) {
-  // let sum = arr.reduce((acc, curr) => acc += curr);
-  // if (sum % 2 !== 0) {
-  //   return 'False';  // if the sum is not divisible by two - it's false
-  // }
-  
-  // sum /= 2;  // our target
-  
-  // const dp = Array.from({length: arr.length}, () => new Array(sum + 1).fill(false));  // initialize nested array filled with falsey values.
-  // rows is the index of the nums array, columns is from 0 .... to .... target
+function isSplittable(points) {
+  let pointsSum = 0;
 
-  // for (let i = 0; i < dp.length; i++) {
-  //   for (let j = 0; j < dp[i].length; j++) { 
-  //       if (i === 0) dp[i][j] = arr[i] === j; // base case - only time a single number equals target is when they are the same
-  //   }
-  // }
-  
-  // for (let i = 1; i < dp.length; i++) {
-  //   for (let j = 1; j < dp[i].length; j++) { 
-  //     if (dp[i-1][j]) dp[i][j] = true; // can we reach target excluding the current element?
-  //     else if (arr[i] < j) { // if the current element is smaller than current target
-  //       dp[i][j] = dp[i-1][j - arr[i]]; // can we reach target including the current element?
-  //     }
-  //   }
-  // }
-  
-  // const lastRow = dp.length - 1;
-  // const lastCol = dp[lastRow].length - 1;
-  // return dp[lastRow][lastCol] ? 'True' : 'False';
-
-  let sum = 0;
-  for(let num of arr) sum += num; 
-
-  if(sum%2 !=0) 
-    return 'False'; 
-
-  sum /=2 
-
-  let dp = new Array(sum+1).fill(false);
-  dp[0] = true;
-  
-  for(let num of arr){
-    
-      for(let i=sum; i>0; i--){
-          if(num <= i){
-              dp[i] = dp[i] || dp[i-num];
-          }
-      }
+  for (let i = 0; i < points.length; i++) {
+    pointsSum += points[i];
   }
-  return dp[sum] ? 'True' : 'False';
 
-  // var sum = arr.reduce((a, b) => a + b, 0);
-    
-  // if (sum % 2 !== 0) {
-  //     return 'False';
-  // }
-  
-  // var half = sum / 2; // Never will have decimal, hence safe to just divide.
-  
-  // // Now, our aim is to find if atleast one subarray has the sum equal to the value `half`
-  // // As we can be sure that the other half of the subarray will have the same value
-  
-  // var dp = [];
-  
-  // // Base cases
+  if (pointsSum % 2 !== 0) {
+    return false;
+  }
+
+  const halfSum = pointsSum / 2;
+
+  const dp = new Array(points.length + 1).fill(null).map(() => new Array(halfSum + 1).fill(false));
+
+  for (let i = 0; i <= points.length; i++) {
+    dp[i][0] = true;
+  }
+
+  for (let i = 1; i <= points.length; i++) {
+    for (let j = 1; j <= halfSum; j++) {
+      if (points[i - 1] > j) {
+        dp[i][j] = dp[i - 1][j];
+      } else {
+        dp[i][j] = dp[i - 1][j] || dp[i - 1][j - points[i - 1]];
+      }
+    }
+  }
+
+  // const dp = new Array(halfSum + 1).fill(false);
   // dp[0] = true;
-  
-  // for (var index = 0; index < arr.length; ++ index) {
-  //     var num = arr[index];
-  //     for (var i = half; i >= num; -- i) {
-  //         dp[i] = dp[i] || dp[i - num];
-  //     }
+
+  // for (let i = 0; i < points.length; i++) {
+  //   for (let j = halfSum; j >= points[i]; j--) {
+  //     dp[j] = dp[j] || dp[j - points[i]];
+  //   }
   // }
-  
-  // return dp[half] ? 'True' : 'False';
+
+  return dp[points.length][halfSum];
 }
 
 function solve() {
   const n = readInt();
-  const arr = readArray();
+  const points = readArray();
   
-  process.stdout.write(`${isSplitPossible(arr)}`);
+  process.stdout.write(`${isSplittable(points) ? 'True' : 'False'}`);
 }
 
 function readInt() {

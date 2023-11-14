@@ -1,3 +1,39 @@
+/*
+  ОТЧЕТ https://contest.yandex.ru/contest/25597/run-report/97326628/
+  
+   Пусть s - первая строка,
+         t - вторая строка,
+         sn - длина первой строки,
+         tn - длина второй строки.
+
+  -- ПРИНЦИП РАБОТЫ --
+  1. Создаю матрицу dp для вычисления расстояния Левенштейна по алгоритму Вагнера — Фишера;
+  2. Заполняю первую строку матрицы. Так как это первая строка, то трансформируется пустая строка в s, количество трансформаций равно длине подстроки s;
+  3. Заполняю первый столбец матрицы. Так как это первый столбец, то трансформируется пустая строка в t, количество трансформаций равно длине подстроки t;
+  4. Заполняю остальные ячейки матрицы с применением рекуррентной формулы:
+    min {
+      D(i,j-1)+1, 
+      D(i-1,j)+1, 
+      D(i-1,j-1) + m(s[i],t[j])
+    },
+    m(s[i],t[j]) = 0, если символы равны, m(s[i],t[j]) = 1, если символы не равны;
+  5. Возвращаю значение нижней правой ячейки матрицы dp, она будет вычислена последней, в ней будет записано минимальное расстояние между строками;
+
+  -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+  Сложность = O(tn * sn) + O(sn) + O(tn) + O(tn * sn) = O(sn) + O(tn) + O(tn * sn).
+  1. Для создания матрицы dp понадобится цикл длиной tn и вложенный цикл длиной sn: tn * sn;
+  2. Для заполнения первой строки матрицы понадобится цикл длиной sn;
+  3. Для заполнения первого столбца матрицы понадобится цикл длиной tn;
+  4. Для заполнения матрицы понадобится цикл длиной tn и вложенный цикл длиной sn: tn * sn.
+
+  -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+  Сложность = O(tn * sn).
+  1. Понадобится доп. память для хранения матрицы dp: tn * sn.
+
+  --------------------------------
+  Пользовалась материалом статьи https://habr.com/ru/articles/676858/
+*/
+
 const _readline = require('readline');
 
 const _reader = _readline.createInterface({
@@ -13,44 +49,37 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-function getDistance(a, b) {
-  // Create empty edit distance matrix for all possible modifications of
-  // substrings of a to substrings of b.
-  const distanceMatrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
+function getDistance(s, t) {
+  const dp = new Array(t.length + 1).fill(null).map(() => new Array(s.length + 1).fill(null));
 
-  // Fill the first row of the matrix.
-  // If this is first row then we're transforming empty string to a.
-  // In this case the number of transformations equals to size of a substring.
-  for (let i = 0; i <= a.length; i += 1) {
-    distanceMatrix[0][i] = i;
+  for (let i = 0; i <= s.length; i++) {
+    dp[0][i] = i;
   }
 
-  // Fill the first column of the matrix.
-  // If this is first column then we're transforming empty string to b.
-  // In this case the number of transformations equals to size of b substring.
-  for (let j = 0; j <= b.length; j += 1) {
-    distanceMatrix[j][0] = j;
+  for (let j = 0; j <= t.length; j++) {
+    dp[j][0] = j;
   }
 
-  for (let j = 1; j <= b.length; j += 1) {
-    for (let i = 1; i <= a.length; i += 1) {
-      const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
-      distanceMatrix[j][i] = Math.min(
-        distanceMatrix[j][i - 1] + 1,  // deletion
-        distanceMatrix[j - 1][i] + 1, // insertion
-        distanceMatrix[j - 1][i - 1] + indicator, // substitution
+  for (let j = 1; j <= t.length; j++) {
+    for (let i = 1; i <= s.length; i++) {
+      const m = s[i - 1] === t[j - 1] ? 0 : 1;
+
+      dp[j][i] = Math.min(
+        dp[j][i - 1] + 1,
+        dp[j - 1][i] + 1,
+        dp[j - 1][i - 1] + m,
       );
     }
   }
 
-  return distanceMatrix[b.length][a.length];
+  return dp[t.length][s.length];
 }
 
 function solve() {
-  const a = readString();
-  const b = readString();
+  const s = readString();
+  const t = readString();
   
-  process.stdout.write(`${getDistance(a, b)}`);
+  process.stdout.write(`${getDistance(s, t)}`);
 }
 
 function readString() {
