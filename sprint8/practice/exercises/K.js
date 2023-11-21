@@ -29,14 +29,7 @@ function removeEvenIndexCharacters(s) {
 
 
 function getResponse(s1, s2) {
-  const s1New = removeEvenIndexCharacters(s2);
-  const s2New = removeEvenIndexCharacters(s1);
-
-  if (s1New === s2New) {
-    return 0;
-  } else {
-    return s2New.localeCompare(s1New);
-  }
+  return removeEvenIndexCharacters(s1).localeCompare(removeEvenIndexCharacters(s2));
 }
 
 function solve() {
