@@ -13,58 +13,6 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-// class Node {
-//   constructor(value) {
-//     this.value = value
-//     this.isEndOfWord = false // false by default, a green node means this flag is true
-//     this.children = {}
-//   }
-// }
-
-// class Trie {
-//   constructor(){
-//     this.root = new Node(null)
-//   }
-
-//   insert(word){
-//     let current = this.root;
-
-//     for (let i = 0; i < word.length; i++) {
-//       const character = word[i];
-
-//       let count = '';
-
-//       while (word[i].charCodeAt(0) >= 48 && word[i].charCodeAt(0) <= 57) {
-//         count += word[i];
-//         i++;
-//       }
-
-
-//       if (current.children[character] === undefined) {
-//         current.children[character] = new Node(character)
-//       }
-
-//       current = current.children[character]  
-//     }
-
-//     current.isEndOfWord = true
-//   }
- 
-//   search(word){
-//     let current = this.root;
-
-//     for (let character of word) {
-//       if (current.children[character] === undefined) {
-//         return false
-//       }
-
-//       current = current.children[character]  
-//    }
-
-//    return current.isEndOfWord
-//  }
-// }
-
 function unpack(string) {
   const stack = [];
   let top = '';
